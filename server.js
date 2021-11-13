@@ -31,6 +31,15 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
+app.get("/api/users", async (req, res) => {
+  // check if user exists and return if it does
+  let userCheck = await User.find();
+
+  if (userCheck !== null && userCheck.length > 0) {
+    return res.json(userCheck);
+  }
+});
+
 app.post("/api/users", async (req, res) => {
   // check if user exists and return if it does
   let userCheck = await User.findOne({ username: req.body.username });
