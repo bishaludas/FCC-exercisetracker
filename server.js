@@ -18,7 +18,6 @@ let User = mongoose.model("UserSchema", UserSchema);
 
 const ExerciseSchema = new Schema({
   userid: { type: String, required: true },
-  username: { type: String, required: true },
   description: { type: String, required: true },
   duration: { type: String, required: true },
   date: { type: Date, default: Date.now },
@@ -62,11 +61,15 @@ app.post("/api/users", async (req, res) => {
 app.post("/api/users/:id/exercises", async (req, res) => {
   let id = req.params.id;
   let input = req.body;
+  console.log("input", input);
 
   let user = await User.findOne({ _id: id });
   if (user === null) {
     return res.json({ error: "Invalid user" });
   }
+  let userRes = { ...user["_doc"] };
+
+  let inputDatedate = input.date === "" ? new Date() : new Date(input.date);
 
   if (input.description === "") {
     return res.json("Path `description` is required.");
@@ -74,20 +77,23 @@ app.post("/api/users/:id/exercises", async (req, res) => {
   if (input.duration === "") {
     return res.json("Path `duration` is required.");
   }
-  console.log(input);
 
-  input.username = user.username;
   let ExerciseObj = new Exercise({
-    userid: input[":_id"],
-    username: input.username,
+    userid: id,
     description: input.description,
     duration: input.duration,
-    date: input.date === "" ? new Date() : new Date(input.date),
+    date: inputDatedate,
   });
 
   ExerciseObj.save((err, data) => {
     if (err) return console.error(err);
-    res.json(data);
+    console.log("ExerciseObj", data);
+    userRes["description"] = data.description;
+    userRes["duration"] = data.duration;
+    userRes["duration"] = data.duration;
+    userRes["date"] = data.date.toDateString();
+
+    res.json(userRes);
   });
 });
 
