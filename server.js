@@ -126,7 +126,7 @@ function getLog(req, res) {
         .map((e) => ({
           description: e.description,
           duration: e.duration,
-          date: e.date, //new Date(e.date).toDateString()}
+          date: new Date(e.date).toDateString(), //new Date(e.date).toDateString()}
         }))
         .slice(0, limit);
       let logObj = {};
