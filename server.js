@@ -67,7 +67,6 @@ app.post("/api/users/:id/exercises", async (req, res) => {
   if (user === null) {
     return res.json({ error: "Invalid user" });
   }
-  let userRes = { ...user["_doc"] };
 
   let inputDatedate = input.date === "" ? new Date() : new Date(input.date);
 
@@ -88,12 +87,12 @@ app.post("/api/users/:id/exercises", async (req, res) => {
   ExerciseObj.save((err, data) => {
     if (err) return console.error(err);
     console.log("ExerciseObj", data);
-    userRes["description"] = data.description;
-    userRes["duration"] = data.duration;
-    userRes["duration"] = data.duration;
-    userRes["date"] = data.date.toDateString();
-
-    res.json(userRes);
+    user["_doc"]["description"] = data.description;
+    user["_doc"]["duration"] = data.duration;
+    user["_doc"]["duration"] = data.duration;
+    user["_doc"]["date"] = data.date.toDateString();
+    console.log(user);
+    res.json(user);
   });
 });
 
